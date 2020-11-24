@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import TableLead from '../components/TableLead/TableLead';
+import TableLead from '../components/Controller/TableLead/TableLead';
 
 class Lead extends Component {
     render() {

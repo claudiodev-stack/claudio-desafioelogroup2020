@@ -1,18 +1,11 @@
 import React, { Component } from 'react';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Lead from './pages/Lead';
-import NovoLead from './pages/NovoLead';
-
+import Routes from './router/Router'
 
 class App extends Component {
   render(){
     return (
       <section>
-{         <Register/> }
-{ /*        <Login/>*/}
-{ /*        <Lead/> */}
-{ /*        <NovoLead/> */}
+        <Routes/>
       </section>
     );
   }

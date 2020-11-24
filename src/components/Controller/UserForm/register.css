@@ -84,3 +84,7 @@
 .btn-registrar:hover{
     background-color: #e64428;
 }
+
+.form_Errors{
+    color: red;
+}
