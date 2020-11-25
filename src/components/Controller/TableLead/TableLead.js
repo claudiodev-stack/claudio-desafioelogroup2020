@@ -3,14 +3,19 @@ import logo from "../../../assets/images/elogroup.png";
 import './lead.css';
 import { Redirect } from 'react-router';
 
-
 class TableLead extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-          redirect:false,  
-        } 
+            potenciais: [],
+            redirect: false,
+        }
+    }
+
+    componentDidMount() {
+        const storedNames = JSON.parse(localStorage.getItem("@elo-group")) || [];
+        this.setState({ potenciais: storedNames });
     }
 
     chamaNovoLead = () => {
@@ -24,7 +29,6 @@ class TableLead extends Component {
             return <Redirect to="/novolead/" />
         } else {
             return (
-
                 <section>
                     <header className="lead-container">
                         <nav className="leads-logo">
@@ -33,7 +37,7 @@ class TableLead extends Component {
                         </nav>
                     </header>
                     <button className="btn-cadastrar" onClick={() => this.chamaNovoLead()}>Novo Lead (+)</button>
-                    <table className="table-main" striped bordered responsive hover>
+                    <table className="table-main">
                         <thead>
                             <tr>
                                 <th>Cliente Potencial</th>
@@ -42,34 +46,15 @@ class TableLead extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                            </tr>
-                            <tr>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                            </tr>
-                            <tr>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                            </tr>
-                            <tr>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                                <td>Oi</td>
-                            </tr>
-                            {/*
-                        this.props.leads.map((lead, index) => {
-                            return (
-                                <td key={index}>
-                                    {console.log("teste")}
-                                </td>
-                            );
-                            })*/}
+                            {this.state.potenciais.map(item => {
+                                return (
+                                    <tr key={item.nome}>
+                                        <td>{item.nome} - {item.email} - {item.telefone}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
 

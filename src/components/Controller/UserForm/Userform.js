@@ -7,33 +7,61 @@ class UserForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = [{
-            usuario: "",
-            password: "",
-            confirmpass: "",
-            redirect: false
-        }]
+        this.state = {
+            usuario: '',
+            password: '',
+            confirmpass: '',
+            redirect: false,
+            senhaMenor: false,
+        };
+
+        this.handleUser = this.handleUser.bind(this);
+        this.handlePassword = this.handlePassword.bind(this);
+        this.handleConfirm = this.handleConfirm.bind(this);
     }
 
-    componentDidMount() {
-        const usuario = localStorage.getItem('@elo-group');
-        const password = localStorage.getItem('@elo-group');
-        const confirmpass = localStorage.getItem('@elo-group');
-        console.log(this.setState({ usuario, password, confirmpass }));
+    handleUser = event => {
+        this.setState({ usuario: event.target.value });
+    }
+
+    handlePassword = event => {
+        this.setState({ password: event.target.value });
+    }
+
+    handleConfirm = event => {
+        this.setState({ confirmpass: event.target.value });
     }
 
 
     handleLocalStorageRegister = event => {
-        const array = [
-            event.target.elements.usuario.value,
-            event.target.elements.password.value,
-            event.target.elements.confirmpass.value,
-        ];
         event.preventDefault();
-        localStorage.setItem('@elo-group', JSON.stringify(array));
+
+        const { usuario, password, confirmpass } = this.state;
+
+        if (password.length < 8 ) {
+            this.setState({ senhaMenor: true });
+            return;
+        }
+
+        this.setState({ senhaMenor: false });
+
+        const storedNames = JSON.parse(localStorage.getItem("@elo-group")) || [];
+
+        const novoNome = {
+            usuario,
+            password,
+            confirmpass,
+        };
+
+        storedNames.push(novoNome)
+
+        localStorage.setItem('@elo-group', JSON.stringify(storedNames));
         window.location.reload();
     };
 
+    componentDidMount() {
+        const storedNames = JSON.parse(localStorage.getItem("@elo-group"));
+    }
 
     chamaLogin = () => {
         this.setState({
@@ -42,16 +70,6 @@ class UserForm extends Component {
     }
 
     render() {
-
-     //   const { usuario } = this.state;
-     //   const { password } = this.state;
-     //   const { confirmpass } = this.state;
-        
-        /*
-        if(usuario !== null || password !== null | confirmpass !== null){
-            alert("bem vindo" + {usuario});
-        }
-        */
 
         if (this.state.redirect) {
             return <Redirect to="/login/" />
@@ -65,15 +83,16 @@ class UserForm extends Component {
                         <form className="form-control" onSubmit={this.handleLocalStorageRegister}>
                             <div className="form-group">
                                 <label className="user-label">Usuário*</label>
-                                <input className="input-group" type="text" name="usuario" id="usuario" required placeholder="Nome de usuário" />
+                                <input className="input-group" type="text" onChange={this.handleUser} value={this.state.usuario} name="usuario" id="usuario" required placeholder="Nome de usuário" />
                             </div>
                             <div className="form-group">
                                 <label className="user-label">Password*</label>
-                                <input className="input-group" type="password" name="password" id="password" required placeholder="Password" />
+                                <input className="input-group" type="password" onChange={this.handlePassword} value={this.state.password} name="password" id="password" required placeholder="Password" />
                             </div>
                             <div className="form-group">
+                                {this.state.senhaMenor && (<div>Senha Errada</div>)}
                                 <label className="user-label">Confirmação Password*</label>
-                                <input className="input-group" type="password" name="confirmpass" id="confirmpass" required placeholder="Confirmar Password" />
+                                <input className="input-group" type="password" name="confirmpass" onChange={this.handleConfirm} value={this.state.confirmpass} id="confirmpass" required placeholder="Confirmar Password" />
                             </div>
                             <button className="btn-registrar" onClick={() => this.chamaLogin()}>Registrar</button>
                         </form>

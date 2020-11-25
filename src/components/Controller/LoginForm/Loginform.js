@@ -8,27 +8,52 @@ class LoginForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            usuario:"",
-            password:"",
-            redirect:false
-        }
+            usuario: '',
+            password: '',
+            redirect: false
+        };
+
+        this.handleUser = this.handleUser.bind(this);
+        this.handlePassword = this.handlePassword.bind(this);
     }
 
-    componentDidMount() {
-        const usuario = localStorage.getItem('@elo-group');
-        const password = localStorage.getItem('@elo-group');
-        console.log(this.setState({ usuario, password }));
+    handleUser = event => {
+        this.setState({ usuario: event.target.value });
+    }
+    
+    handlePassword = event => {
+        this.setState({ password: event.target.value });
     }
 
     handleLocalStorageLogin = event => {
-        const array = [
-            event.target.elements.usuario.value,
-            event.target.elements.password.value,
-        ];
+
         event.preventDefault();
-        localStorage.setItem('@elo-group', JSON.stringify(array));
+
+        const { usuario, password} = this.state;
+
+        if (password.length < 8 ) {
+            this.setState({ senhaMenor: true });
+            return;
+        }
+
+        this.setState({ senhaMenor: false });
+
+        const storedNames = JSON.parse(localStorage.getItem("@elo-group")) || [];
+
+        const novoNome = {
+            usuario,
+            password,
+        };
+
+        storedNames.push(novoNome)
+
+        localStorage.setItem('@elo-group', JSON.stringify(storedNames));
         window.location.reload();
     };
+
+    componentDidMount() {
+        const storedNames = JSON.parse(localStorage.getItem("@elo-group"));
+    }
 
     chamaLead = () => {
         this.setState({
@@ -49,11 +74,11 @@ class LoginForm extends Component {
                         <form className="form-control" onSubmit={this.handleLocalStorageLogin}>
                             <div className="form-group">
                                 <label className="user-label">Usuário*</label>
-                                <input className="input-group" type="text" required placeholder="Nome de usuário" />
+                                <input className="input-group" onChange={this.handleUser} value={this.state.usuario} name="usuario" type="text" required placeholder="Nome de usuário" />
                             </div>
                             <div className="form-group">
-                                <label className="user-label">Password*</label>
-                                <input className="input-group" type="password" required placeholder="Password" />
+                                <label className="user-label">Password*</label> 
+                                <input className="input-group" onChange={this.handlePassword} value={this.state.password} name="password" type="password" required placeholder="Password" />
                             </div>
                             <button className="btn-registrar" onClick={() => this.chamaLead()}>Logar</button>
                         </form>
